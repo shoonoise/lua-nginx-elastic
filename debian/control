@@ -5,7 +5,7 @@ Maintainer: Alexander Kushnarev <avkushnarev@gmail.com>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.2
 Homepage: https://github.com/shoonoise/lua-ngx-elastic
-Vcs-Git: git://github.com/shoonoise/lua-ngx-elastic.git 
+Vcs-Git: git://github.com/shoonoise/lua-ngx-elastic.git
 Vcs-Browser: https://github.com/shoonoise/lua-ngx-elastic
 
 Package: lua-nginx-elastic

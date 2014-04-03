@@ -1,15 +1,15 @@
 Source: lua-nginx-elastic
-Section: unknown
+Section: misc
 Priority: extra
 Maintainer: Alexander Kushnarev <avkushnarev@gmail.com>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.2
-Homepage: <insert the upstream URL, if relevant>
-#Vcs-Git: git://git.debian.org/collab-maint/lua-nginx-elastic.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/lua-nginx-elastic.git;a=summary
+Homepage: https://github.com/shoonoise/lua-ngx-elastic
+Vcs-Git: git://github.com/shoonoise/lua-ngx-elastic.git 
+Vcs-Browser: https://github.com/shoonoise/lua-ngx-elastic
 
 Package: lua-nginx-elastic
 Architecture: all
-Depends: ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Depends: ${misc:Depends}, liblua5.1-json, liblua5.1-socket2
+Description: Lua script for nginx which send access logs into elasticsearch
+ You need nginx with lua support installed to use this package

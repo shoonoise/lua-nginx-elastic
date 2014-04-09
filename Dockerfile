@@ -3,11 +3,15 @@
 # VERSION 1.0
 
 FROM nikicat/ubuntu:12.04
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update
+RUN apt-get -y install python python-pip git
+RUN pip install git+git://github.com/signalfuse/maestro-ng
 
 # Nginx
 RUN add-apt-repository ppa:nginx/stable
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y liblua5.1-json liblua5.1-socket2 nginx-extras
+RUN apt-get install -y liblua5.1-json liblua5.1-socket2 nginx-extras
 
 # Elastic module
 ADD nginx-example.conf /etc/nginx/nginx.conf

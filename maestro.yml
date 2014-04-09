@@ -6,7 +6,7 @@ ships:
 services:
 
   nginx:
-    image: lua-nginx-elastic
+    image: shoonoise/lua-nginx-elastic
     requires: [ elasticsearch ]
     instances:
       ngx-1:

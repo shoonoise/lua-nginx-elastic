@@ -19,6 +19,6 @@ services:
     instances:
       elasticlog:
         ship: vm1
-        ports: {client: 9200, peer: 9200}
+        ports: {client: 9200, peer: 9201}
         lifecycle:
           running: [{type: tcp, port: client, max_wait: 10}]

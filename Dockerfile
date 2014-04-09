@@ -4,9 +4,6 @@
 
 FROM nikicat/ubuntu:12.04
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update
-RUN apt-get -y install python python-pip git
-RUN pip install git+git://github.com/signalfuse/maestro-ng
 
 # Nginx
 RUN add-apt-repository ppa:nginx/stable

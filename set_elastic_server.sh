@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sed -i "s/localhost/$ELASTIC_PORT_9200_TCP_ADDR/" /etc/nginx/nginx.conf
+sed -i "s/localhost/$elasticsearch_elasticlog_HOST/" /etc/nginx/nginx.conf

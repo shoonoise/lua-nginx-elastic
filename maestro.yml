@@ -4,9 +4,10 @@ ships:
   vm1: {ip: 10.0.1.2}
 
 services:
-  ninx:
-    image: shoonoise/lua-nginx-elastic
-    requeres: [elasticsearch]
+
+  nginx:
+    image: lua-nginx-elastic
+    requires: [ elasticsearch ]
     instances:
       ngx-1:
         ship: vm1

@@ -1,14 +1,15 @@
 # Nginx Lua module to send access logs into elasticsearch
 #
+# MAINTAINER Alexander Kushnarev <avkushnarev@gmail.com>
+#
 # VERSION 1.0
 
-FROM nikicat/ubuntu:12.04
-ENV DEBIAN_FRONTEND noninteractive
+FROM yandex/ubuntu:latest
 
 # Nginx
 RUN add-apt-repository ppa:nginx/stable
 RUN apt-get update
-RUN apt-get install -y liblua5.1-json liblua5.1-socket2 nginx-extras
+RUN DEBIAN_FRONTEND noninteractive apt-get install -y liblua5.1-json liblua5.1-socket2 nginx-extras
 
 # Elastic module
 ADD nginx-example.conf /etc/nginx/nginx.conf

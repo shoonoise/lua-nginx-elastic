@@ -11,7 +11,7 @@ services:
     instances:
       ngx-1:
         ship: vm1
-        ports: {client: 80, peer: 8080}
+        ports: {client: 80}
         lifecycle:
           running: [{type: tcp, port: client, max_wait: 10}]
 
@@ -20,6 +20,6 @@ services:
     instances:
       elasticlog:
         ship: vm1
-        ports: {client: 9200, peer: 9201}
+        ports: {client: 9200}
         lifecycle:
           running: [{type: tcp, port: client, max_wait: 10}]

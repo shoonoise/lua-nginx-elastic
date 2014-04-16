@@ -9,7 +9,7 @@ FROM yandex/ubuntu:latest
 # Nginx
 RUN add-apt-repository ppa:nginx/stable
 RUN apt-get update
-RUN DEBIAN_FRONTEND noninteractive apt-get install -y liblua5.1-json liblua5.1-socket2 nginx-extras
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y liblua5.1-json liblua5.1-socket2 nginx-extras
 
 # Elastic module
 ADD nginx-example.conf /etc/nginx/nginx.conf

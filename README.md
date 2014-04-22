@@ -9,6 +9,5 @@ See at `nginx-example.conf`.
 
 ## Tests
 
-At best just run `python tests.py` (you need [requests](https://github.com/kennethreitz/requests) and [docker](https://github.com/dotcloud/docker-py) libs installed)
-
+At best just run `python -m tox`
 If you got exceptions (especially http connection error) look at *constants* in `tests.py`, probably you should change them.

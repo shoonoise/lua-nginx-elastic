@@ -7,7 +7,7 @@ import logging
 from urlparse import urljoin
 
 
-WWW = "http://localhost:8111"
+WWW = "http://localhost:8080"
 ELASTIC = "http://localhost:9200"
 DOCKER_API = "http://localhost:4243"
 DEBUG = False
@@ -39,7 +39,7 @@ class ElasticSenderTests(unittest.TestCase):
                          tag="ngx_elastic_img",  rm=True, stream=True))
         cls.nginx_id = cls.dc.create_container("ngx_elastic_img").get('Id')
 
-        cls.dc.start(cls.nginx_id, port_bindings={80: 80},
+        cls.dc.start(cls.nginx_id, port_bindings={80: 8080},
                      links={cls.elastic_name: "ELASTIC"})
         # Time of sleep dependent on your env, you may change it as you need
         time.sleep(10)

@@ -56,8 +56,10 @@ class ElasticSenderTests(unittest.TestCase):
 
         cls.dc.stop(cls.elastic_id)
         cls.dc.stop(cls.nginx_id)
+        time.sleep(1)
         cls.dc.remove_container(cls.elastic_id)
         cls.dc.remove_container(cls.nginx_id)
+        time.sleep(1)
         cls.dc.remove_image("ngx_elastic_img")
         cls.dc.remove_image("orchardup/elasticsearch")
 

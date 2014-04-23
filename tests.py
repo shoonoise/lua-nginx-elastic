@@ -3,46 +3,63 @@ import unittest
 import requests
 import time
 import docker
+import logging
 from urlparse import urljoin
 
 
 WWW = "http://localhost:8111"
 ELASTIC = "http://localhost:9200"
-DOCKER_API = "http://localhost:4243"
+DOCKER_API = "http://10.0.1.2:4243"
+DEBUG = False
 
 
 class ElasticSenderTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.docker_client = docker.Client(base_url=DOCKER_API,
-                                          version='1.9',
-                                          timeout=30)
+        cls.logger = logging.getLogger("docker api")
+        cls.logger.setLevel(logging.DEBUG)
+        if DEBUG:
+            cls.logger.addHandler(logging.StreamHandler())
+        else:
+            cls.logger.addHandler(logging.FileHandler("tests.log"))
 
-        cls.elastic_container_id = cls.docker_client.create_container("orchardup/elasticsearch").get('Id')
-        cls.docker_client.build(path=os.path.abspath(os.path.curdir),
-                                tag="ngx_elastic_img", rm=True)
-        cls.nginx_container_id = cls.docker_client.create_container("ngx_elastic_img").get('Id')
-        cls.docker_client.start(cls.elastic_container_id,
-                                port_bindings={9200: 9200})
-        cls.elastic_container_name = cls.docker_client.inspect_container(cls.elastic_container_id)["Name"]
-        cls.docker_client.start(cls.nginx_container_id,
-                                port_bindings={80: 80},
-                                links={cls.elastic_container_name: "ELASTIC"})
+        cls.dc = docker.Client(base_url=DOCKER_API, version='1.9',
+                               timeout=30)
+
+        map(cls.logger.debug,
+            cls.dc.pull("orchardup/elasticsearch", stream=True))
+        cls.elastic_id = cls.dc.create_container(
+            "orchardup/elasticsearch").get('Id')
+        cls.dc.start(cls.elastic_id, port_bindings={9200: 9200})
+        cls.elastic_name = cls.dc.inspect_container(cls.elastic_id)["Name"]
+
+        map(cls.logger.debug,
+            cls.dc.build(path=os.path.abspath(os.path.curdir),
+                         tag="ngx_elastic_img",  rm=True, stream=True))
+        cls.nginx_id = cls.dc.create_container("ngx_elastic_img").get('Id')
+
+        cls.dc.start(cls.nginx_id, port_bindings={80: 80},
+                     links={cls.elastic_name: "ELASTIC"})
+        # Time of sleep dependent on your env, you may change it as you need
         time.sleep(10)
 
     @classmethod
     def tearDownClass(cls):
-        print cls.docker_client.logs(cls.elastic_container_id,
-                                     stdout=True, stderr=True, stream=False)
+        map(cls.logger.debug, cls.dc.logs(cls.elastic_id,
+                                          stdout=True, stderr=True,
+                                          stream=False))
 
-        print cls.docker_client.logs(cls.nginx_container_id,
-                                     stdout=True, stderr=True, stream=False)
+        map(cls.logger.debug, cls.dc.logs(cls.nginx_id,
+                                          stdout=True, stderr=True,
+                                          stream=False))
 
-        cls.docker_client.stop(cls.elastic_container_id)
-        cls.docker_client.stop(cls.nginx_container_id)
-        cls.docker_client.remove_container(cls.elastic_container_id)
-        cls.docker_client.remove_container(cls.nginx_container_id)
+        cls.dc.stop(cls.elastic_id)
+        cls.dc.stop(cls.nginx_id)
+        cls.dc.remove_container(cls.elastic_id)
+        cls.dc.remove_container(cls.nginx_id)
+        cls.dc.remove_image("ngx_elastic_img")
+        cls.dc.remove_image("orchardup/elasticsearch")
 
     def get_logs(self):
         resp = requests.get(urljoin(ELASTIC, "log-*/_search?q=host:*"))
@@ -51,6 +68,7 @@ class ElasticSenderTests(unittest.TestCase):
     def test_hits_counter(self):
         current = self.get_logs()['hits']['total']
         requests.get(urljoin(WWW, '/ok/'))
+        # Time of sleep dependent on your env, you may change it as you need
         time.sleep(3)
         new = self.get_logs()['hits']['total']
         self.assertEqual(new - current, 1, "Current: %s" % current)

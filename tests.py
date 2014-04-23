@@ -9,7 +9,7 @@ from urlparse import urljoin
 
 WWW = "http://localhost:8111"
 ELASTIC = "http://localhost:9200"
-DOCKER_API = "http://10.0.1.2:4243"
+DOCKER_API = "http://localhost:4243"
 DEBUG = False
 
 

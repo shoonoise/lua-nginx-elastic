@@ -1,0 +1,25 @@
+name: demo
+
+ships:
+  vm1: {ip: 10.0.1.2}
+
+services:
+
+  nginx:
+    image: shoonoise/lua-nginx-elastic
+    requires: [ elasticsearch ]
+    instances:
+      ngx-1:
+        ship: vm1
+        ports: {client: 80}
+        lifecycle:
+          running: [{type: tcp, port: client, max_wait: 10}]
+
+  elasticsearch:
+    image: orchardup/elasticsearch
+    instances:
+      elasticlog:
+        ship: vm1
+        ports: {client: 9200}
+        lifecycle:
+          running: [{type: tcp, port: client, max_wait: 10}]

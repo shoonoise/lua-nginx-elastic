@@ -1,22 +1,19 @@
 # Nginx Lua module to send access logs into elasticsearch
 #
-# MAINTAINER Alexander Kushnarev <avkushnarev@gmail.com>
-#
-# VERSION 1.0
+VERSION 1.0
 
-FROM yandex/ubuntu:latest
+FROM yandex/ubuntu:14.04
+MAINTAINER Alexander Kushnarev <avkushnarev@gmail.com>
 
 # Nginx
 RUN add-apt-repository ppa:nginx/stable
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y liblua5.1-json liblua5.1-socket2 nginx-extras
+RUN apt-get install -y lua-cjson lua-socket nginx-extras python-mako
 
 # Elastic module
-ADD nginx-example.conf /etc/nginx/nginx.conf
+ADD nginx.conf.mako /tmp/
 ADD stat_sender.lua /usr/share/nginx/
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-ADD set_elastic_server.sh /
 
 EXPOSE 80
 
-CMD /set_elastic_server.sh && nginx
+CMD mako-render /tmp/nginx.conf.mako > /etc/nginx/nginx.conf && nginx

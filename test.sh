@@ -1,12 +1,20 @@
 #!/bin/bash -e
 
-BASEDIR=$(dirname $0)
+basedir=`dirname $0`
+basepath=`realpath $basedir`
+cids=""
 
-trap "docker ps -q -a | xargs docker rm -f" EXIT SIGTERM SIGQUIT SIGINT
+function clean_containers() {
+    docker rm -f $cids
+}
 
-docker run --name elasticsearch -d orchardup/elasticsearch:latest
-docker build -t nginx-with-lua-stats $BASEDIR
-docker run --name nginx --link elasticsearch:elasticsearch -d nginx-with-lua-stats
-docker run -v `realpath ${BASEDIR}`:/root/src:ro -t -i --link elasticsearch:elasticsearch --link nginx:nginx nikicat/python-testing tox || true
+trap clean_containers EXIT SIGTERM SIGQUIT SIGINT
+
+cid=`docker run --name elasticsearch -d orchardup/elasticsearch:latest`
+cids="$cids $cid"
+docker build -t nginx-with-lua-stats $basedir
+cid=`docker run --name nginx --link elasticsearch:elasticsearch -d nginx-with-lua-stats`
+cids="$cids $cid"
+docker run --rm -v $basepath:/root/src:ro -t -i --link elasticsearch:elasticsearch --link nginx:nginx nikicat/python-testing tox
 docker logs nginx
 docker logs elasticsearch

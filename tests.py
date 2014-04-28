@@ -17,7 +17,7 @@ class ElasticSenderTests(unittest.TestCase):
         # Time of sleep dependent on your env, you may change it as you need
         time.sleep(3)
         new = self.get_logs()['hits']['total']
-        self.assertEqual(new - current, 1)
+        self.assertEqual(new, current + 1)
 
 
 if __name__ == "__main__":

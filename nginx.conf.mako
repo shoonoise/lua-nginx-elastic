@@ -1,4 +1,5 @@
 worker_processes 1;
+daemon off;
 
 error_log stderr notice;
 
@@ -10,7 +11,8 @@ http {
 
     upstream elasticsearch {
         # elastic search server
-        server %ELASTICSEARCH_HOST%:9200 max_fails=3 fail_timeout=30s;
+        <%! import os %>
+        server ${os.environ['ELASTICSEARCH_PORT_9200_TCP_ADDR']}:${os.environ['ELASTICSEARCH_PORT_9200_TCP_PORT']} max_fails=3 fail_timeout=30s;
     }
 
     upstream backend {
@@ -42,7 +44,7 @@ http {
 
         location /target {
             internal;
-            rewrite ^/target/(.*)$ /$1 break;
+            rewrite ^/target/(.*)$ /\$1 break;
             # pass request to location/upstream/fastcgi/etc
             proxy_pass http://backend/;
         }

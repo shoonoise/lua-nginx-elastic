@@ -1,4 +1,9 @@
-json = require "json"
+ok, mod = pcall(require, "cjson")
+if not ok then
+    json = require "json"
+else
+    json = mod
+end
 socket = require "socket"
 
 

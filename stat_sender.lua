@@ -13,6 +13,8 @@ elseif ngx.var.request_method == "POST" then
     options = { copy_all_vars = true, method = ngx.HTTP_POST }
 elseif ngx.var.request_method == "HEAD" then
     options = { copy_all_vars = true, method = ngx.HTTP_HEAD }
+elseif ngx.var.request_method == "DELETE" then
+    options = { copy_all_vars = true, method = ngx.HTTP_DELETE }
 else
     return ngx.exit(ngx.HTTP_METHOD_NOT_IMPLEMENTED)
 end
